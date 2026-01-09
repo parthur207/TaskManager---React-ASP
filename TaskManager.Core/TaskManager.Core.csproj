@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Entities\" />
+    <Folder Include="ResposePattern\" />
+    <Folder Include="UseCases\" />
+    <Folder Include="Ports\" />
+    <Folder Include="ValueObjects\" />
   </ItemGroup>
 
 </Project>
