@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.TaskCategory
     internal class UpdateTaskCategoryUseCase : IUpdateTaskCategoryUseCase
     {
 
-        private IUpdateTaskCategoryPort _updateTaskCategoryPort;
+        private readonly IUpdateTaskCategoryPort _updateTaskCategoryPort;
         public UpdateTaskCategoryUseCase(IUpdateTaskCategoryPort updateTaskCategoryPort)
         {
             _updateTaskCategoryPort = updateTaskCategoryPort;

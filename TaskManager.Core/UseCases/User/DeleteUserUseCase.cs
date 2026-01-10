@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.User
     internal class DeleteUserUseCase : IDeleteUserUseCase
     {
 
-        private IDeleteUserPort _deleteUserPort;
+        private readonlyIDeleteUserPort _deleteUserPort;
         public DeleteUserUseCase(IDeleteUserPort deleteUserPort)
         {
             _deleteUserPort = deleteUserPort;

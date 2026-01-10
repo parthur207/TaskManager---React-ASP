@@ -10,7 +10,7 @@ namespace TaskManager.Core.UseCases.User
 {
     internal class UpdateUserPasswordUseCase : IUpdateUserPassworkUseCase
     {
-        private IUpdateUserPasswordPort _updateUserPasswordPort;
+        private readonly IUpdateUserPasswordPort _updateUserPasswordPort;
         public UpdateUserPasswordUseCase(IUpdateUserPasswordPort updateUserPasswordPort)
         {
             _updateUserPasswordPort = updateUserPasswordPort;

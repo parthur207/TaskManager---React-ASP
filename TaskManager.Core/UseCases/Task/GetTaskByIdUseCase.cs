@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.Task
     public class GetTaskByIdUseCase : IGetTaskByIdUseCase
     {
 
-        private IGetTaskByIdPort _getTaskByIdPort;
+        private readonly IGetTaskByIdPort _getTaskByIdPort;
         public GetTaskByIdUseCase(IGetTaskByIdPort getTaskByIdPort)
         {
             _getTaskByIdPort = getTaskByIdPort;

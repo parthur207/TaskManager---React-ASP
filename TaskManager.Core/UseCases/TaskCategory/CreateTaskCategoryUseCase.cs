@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.TaskCategory
 {
     internal class CreateTaskCategoryUseCase : ICreateTaskCategoryUseCase
     {
-        private ICreateTaskCategoryPort _createTaskCategoryPort;
+        private readonly ICreateTaskCategoryPort _createTaskCategoryPort;
         public CreateTaskCategoryUseCase(ICreateTaskCategoryPort createTaskCategoryPort)
         {
             _createTaskCategoryPort = createTaskCategoryPort;

@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.User
     internal class CreateUserUseCase : ICreateUserUseCase
     {
 
-        private ICreateUserPort _createUserPort;
+        private readonly ICreateUserPort _createUserPort;
         public CreateUserUseCase(ICreateUserPort createUserPort)
         {
             _createUserPort = createUserPort;

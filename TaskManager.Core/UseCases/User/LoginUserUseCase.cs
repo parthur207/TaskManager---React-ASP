@@ -11,7 +11,7 @@ namespace TaskManager.Core.UseCases.User
     internal class LoginUserUseCase : ILoginUserUseCase
     {
 
-        private ILoginUserPort _loginUserPort;
+        private readonly ILoginUserPort _loginUserPort;
         public LoginUserUseCase(ILoginUserPort loginUserPort)
         {
             _loginUserPort = loginUserPort;

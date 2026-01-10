@@ -11,9 +11,7 @@ namespace TaskManager.Core.UseCases.TaskCategory
 {
     internal class DeleteTaskCategoryUseCase : IDeleteTaskCategoryUseCase
     {
-
-
-        private IDeleteTaskCategoryPort _deleteTaskCategoryPort;
+        private readonly IDeleteTaskCategoryPort _deleteTaskCategoryPort;
         public DeleteTaskCategoryUseCase(IDeleteTaskCategoryPort deleteTaskCategoryPort)
         {
             _deleteTaskCategoryPort = deleteTaskCategoryPort;

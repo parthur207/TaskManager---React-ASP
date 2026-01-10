@@ -12,7 +12,7 @@ namespace TaskManager.Core.UseCases.Task
     internal class CreateTaskUseCase : ICreateTaskUseCase
     {
 
-        private ICreateTaskPort _createTaskPort;
+        private readonly ICreateTaskPort _createTaskPort;
         public CreateTaskUseCase(ICreateTaskPort createTaskPort)
         {
             _createTaskPort = createTaskPort;
