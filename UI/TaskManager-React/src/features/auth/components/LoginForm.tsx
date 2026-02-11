@@ -5,7 +5,7 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>Login</h1>
+      <h1>Bem-vindo de volta!</h1>
 
       <input
         name="email"

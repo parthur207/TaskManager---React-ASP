@@ -1,27 +1,43 @@
-import { useRegister } from "../hooks/useRegister";
+import {useRegister} from "../hooks/useRegister";
 
-export default function RegisterForm() {
-  const { form, handleChange, handleSubmit } = useRegister();
+export default function RegisterForm() 
+{
+  const { form, handleChange, handleSubmit, loading } = useRegister();
 
-  return (
+
+  return(
     <form onSubmit={handleSubmit}>
-      <h1>Cadastro</h1>
+      <h1>Crie sua conta!</h1>
 
-      <input name="email" value={form.email} onChange={handleChange} />
+      <input
+        name="name"
+        placeholder="Nome"
+        value={form.name}
+        onChange={handleChange}
+        type="text"
+      />
+
+      <input 
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        type="email"
+      />
+
       <input
         name="password"
         type="password"
+        placeholder="Senha"
         value={form.password}
         onChange={handleChange}
       />
       <input
-        name="confirmPassword"
-        type="password"
-        value={form.confirmPassword}
-        onChange={handleChange}
+      name=" "
       />
-
-      <button>Cadastrar</button>
-    </form>
-  );
+      <button disabled={loading}>
+        {loading ? "Cadastrando..." : "Cadastrar"}
+      </button> 
+      </form>
+  )
 }
