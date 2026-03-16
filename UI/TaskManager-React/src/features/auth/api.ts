@@ -1,5 +1,23 @@
-import type { AuthResponse, LoginRequest } from "./types";
+import type { ResponsePattern , LoginRequest,  ResponseStatus} from "./types";
 
-export function login(data: LoginRequest) {
-  return http.post<AuthResponse>('/auth/login', data);
+
+
+export async function Login(data: LoginRequest) : Promise<ResponsePattern>{
+
+    try
+    {
+        const Response= await api.post<ResponsePattern>("auth/login", data);
+    }
+    catch()
+    {
+        
+    }
+    return Response;
 }
+
+ 
+
+if(Response.Status==ResponseStatus.)
+
+  }
+ 
