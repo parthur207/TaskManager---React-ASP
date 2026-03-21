@@ -28,6 +28,8 @@ namespace TaskManager.Core.Entities
         public UserEntity User { get; private set; }
         public Guid CategoryId { get; private set; }
         public TaskCategoryEntity? Category { get; private set; }
+        public Guid SpaceId { get; private set; }
+        public SpaceEntity Space { get;private set; }
         public TaskStatusEnum StatusEnum { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }

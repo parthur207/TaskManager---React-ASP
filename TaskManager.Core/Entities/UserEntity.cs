@@ -19,6 +19,8 @@ namespace TaskManager.Core.Entities
             PasswordHash = new PasswordVO(passwordHash);
             Role=RoleUserEnum.UserCommom;
             Status=UserStatusEnum.Active;
+            Tasks = [];
+            Spaces = [];
             CreatedAt = DateTime.Now;
         } //Create
 
@@ -35,6 +37,7 @@ namespace TaskManager.Core.Entities
         public RoleUserEnum Role { get; private set; }
         public UserStatusEnum Status { get; private set; }
         public IEnumerable<TaskEntity>? Tasks { get; private set; }
+        public IList<SpaceMemberEntity> Spaces { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedDate { get; private set; }
        
