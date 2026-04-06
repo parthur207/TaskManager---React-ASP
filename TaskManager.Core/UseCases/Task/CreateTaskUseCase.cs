@@ -30,10 +30,10 @@ namespace TaskManager.Core.UseCases.Task
                 Response.Status = ResponseStatusEnum.Error;
                 return Response;
             }
-            if (!string.IsNullOrWhiteSpace(model.ResponsibleEmail))
-            {
-                var DataResponsibleTask = await _userQuery.GetByEmailAsync(model.ResponsibleEmail);
-
+            if (!string.IsNullOrWhiteSpace(model.ResponsibleEmail)
+                && _userQuery.UserExists(model.ResponsibleEmail).Result.Content)
+            {                
+                
             }
 
             var responseRepository = await _createTaskPort.ExecuteAsync(model);

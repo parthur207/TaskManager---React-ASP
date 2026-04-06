@@ -11,8 +11,8 @@ namespace TaskManager.Core.Ports.ReadServices
     public interface IUserQueryPort
     {
         Task<ResponseModel<UserEntity?>> GetUserByEmailAsync(string email);
-
-        Task<ResponseModel<int?>> GetUserIdByEmail(string email);
+        Task<ResponseModel<bool>> UserExists(string email);
+        Task<ResponseModel<IQueryable<Guid>>> GetUserIdByEmail(string email);
 
     }
 }
