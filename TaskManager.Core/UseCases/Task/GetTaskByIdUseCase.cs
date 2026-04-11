@@ -16,5 +16,10 @@ namespace TaskManager.Core.UseCases.Task
         {
             _getTaskByIdPort = getTaskByIdPort;
         }
+
+        public Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid UserId)
+        {
+            return _getTaskByIdPort.ExecuteAsync(TaskId, UserId);
+        }
     }
 }

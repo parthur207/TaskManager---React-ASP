@@ -24,16 +24,18 @@ namespace TaskManager.Adapters.Persistence.Task
             var Response= new SimpleResponseModel();
             try
             {
-                var taskMapped= TaskMapper.
-
-                if (taskMapped is null)
+                var entity = await _contextTask.Task
+                    .FirstOrDefaultAsync(x => x.Id == IdUser 
+                    && x.OwnerId == IdUser);
+                
+                if(entity is null)
                 {
-                    Response.Message = "Erro no mapeamento.";
+                    Response.Message = "Tarefa não encontrada, ou sem privilégio de exclusão.";
                     Response.Status= ResponseStatusEnum.Error;
                     return Response;
                 }
 
-                var resultRepository = await _contextTask.Task.ExecuteDeleteAsync(taskMapped, IdUser);
+               await _contextTask.Task.ExecuteDeleteAsync();
 
 
 

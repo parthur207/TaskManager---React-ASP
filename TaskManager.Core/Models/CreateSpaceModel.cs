@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskManager.Core.UseCases.AI
+namespace TaskManager.Core.Models
 {
-    public class AnalyzeTaskUseCase
+    public class CreateSpaceModel
     {
-        
     }
 }

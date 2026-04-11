@@ -9,7 +9,7 @@ using TaskManager.Core.Models;
 
 namespace TaskManager.Adapters.Mappers
 {
-    public   class TaskMapper
+    public class TaskMapper
     {
         public static TaskEntity ModelToEntity(
             CreateTaskModel model,
