@@ -9,6 +9,6 @@ namespace TaskManager.Core.Ports.Persistence.User
 {
     public interface IDeleteUserPort
     {
-        Task<SimpleResponseModel> ExecuteAsync();
+        Task<SimpleResponseModel> ExecuteAsync(Guid userId);
     }
 }

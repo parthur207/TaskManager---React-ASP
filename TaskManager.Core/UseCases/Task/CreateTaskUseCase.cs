@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using TaskManager.Adapters.Mappers;
 using TaskManager.Core.Enums;
 using TaskManager.Core.Models.Task;
 using TaskManager.Core.Ports.ReadServices;
@@ -15,7 +15,12 @@ namespace TaskManager.Core.UseCases.Task
         private readonly ICurrentUserPort _currentUserPort;
         private readonly IUserQueryPort _userQuery;
         private readonly ISpaceMembershipQueryPort _membership;
-        public CreateTaskUseCase(ICreateTaskPort createTaskPort, IUserQueryPort userQuery, ISpaceMembershipQueryPort membership, ICurrentUserPort currentUserPort)
+
+        public CreateTaskUseCase(
+            ICreateTaskPort createTaskPort,
+            IUserQueryPort userQuery,
+            ISpaceMembershipQueryPort membership,
+            ICurrentUserPort currentUserPort)
         {
             _createTaskPort = createTaskPort;
             _userQuery = userQuery;
@@ -25,40 +30,65 @@ namespace TaskManager.Core.UseCases.Task
 
         public async Task<SimpleResponseModel> ExecuteAsync(CreateTaskModel model)
         {
-            var Response = new SimpleResponseModel();
+            var response = new SimpleResponseModel();
 
             if (!_currentUserPort.IsAuthenticated)
             {
-                Response.Message = "Login expirado.";
-                Response.Status = ResponseStatusEnum.Unauthorized;
-                return Response;
+                response.Message = "Login expirado.";
+                response.Status = ResponseStatusEnum.Unauthorized;
+                return response;
             }
 
             if (model is null)
             {
-                Response.Message = "Erro. Dados nulos.";
-                Response.Status = ResponseStatusEnum.Error;
-                return Response;
+                response.Message = "Dados da tarefa não podem ser nulos.";
+                response.Status = ResponseStatusEnum.Error;
+                return response;
             }
-            
-            if (!string.IsNullOrWhiteSpace(model.ResponsibleEmail)
-                && _membership..Result.Content)
+
+            if (string.IsNullOrWhiteSpace(model.Name))
             {
-                Response.Message="Erro. O usuário responsável não existe.";
-                Response.Status= ResponseStatusEnum.Error;
-                return Response;
+                response.Message = "O nome da tarefa é obrigatório.";
+                response.Status = ResponseStatusEnum.Error;
+                return response;
             }
 
-            var entityMembership = await _membership.(_currentUserPort.UserId, model.SpaceId);
-
-            var responseRepository = await _createTaskPort.ExecuteAsync(model);
-
-            if (responseRepository.S)
+            // Verifica se o usuário atual é membro do space informado
+            var membershipResponse = await _membership.IsUserMemberAsync(_currentUserPort.UserId, model.SpaceId);
+            if (membershipResponse.Status != ResponseStatusEnum.Success || !membershipResponse.Content)
             {
-
+                response.Message = "Você não tem acesso a este espaço.";
+                response.Status = ResponseStatusEnum.Unauthorized;
+                return response;
             }
 
-            return Response;
+            Guid responsibleUserId = _currentUserPort.UserId;
+
+            // Se foi informado um responsável diferente, valida se ele existe e é membro do space
+            if (!string.IsNullOrWhiteSpace(model.ResponsibleEmail))
+            {
+                var userResponse = await _userQuery.GetUserByEmailAsync(model.ResponsibleEmail);
+                if (userResponse.Status != ResponseStatusEnum.Success || userResponse.Content is null)
+                {
+                    response.Message = "O usuário responsável informado não foi encontrado.";
+                    response.Status = ResponseStatusEnum.Error;
+                    return response;
+                }
+
+                var responsibleMembership = await _membership.IsUserMemberAsync(userResponse.Content.Id, model.SpaceId);
+                if (responsibleMembership.Status != ResponseStatusEnum.Success || !responsibleMembership.Content)
+                {
+                    response.Message = "O usuário responsável não é membro deste espaço.";
+                    response.Status = ResponseStatusEnum.Error;
+                    return response;
+                }
+
+                responsibleUserId = userResponse.Content.Id;
+            }
+
+            var entity = TaskMapper.ModelToEntity(model, _currentUserPort.UserId, responsibleUserId);
+
+            return await _createTaskPort.ExecuteAsync(entity);
         }
     }
 }

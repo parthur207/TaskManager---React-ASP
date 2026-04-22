@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManager.Adapters.DTOs;
+﻿using TaskManager.Adapters.DTOs;
 using TaskManager.Core.Entities;
 using TaskManager.Core.Models.Task;
 
@@ -13,14 +8,16 @@ namespace TaskManager.Adapters.Mappers
     {
         public static TaskEntity ModelToEntity(
             CreateTaskModel model,
-            Guid userId)
+            Guid ownerId,
+            Guid responsibleUserId)
         {
             return new TaskEntity(
                 model.Name,
                 model.Description,
                 model.CategoryId,
                 model.SpaceId,
-                userId,
+                ownerId,
+                responsibleUserId,
                 model.Term
             );
         }
@@ -29,16 +26,17 @@ namespace TaskManager.Adapters.Mappers
         {
             return new TaskDTO
             {
-                Name = entity.Name,
-                Description = entity.Description ?? "",
-                TaskCategoryName = entity.Category?.Name ?? "",
-                SpaceName = entity.Space?.Name ?? "",
+                Id = entity.Id,
+                Name = entity.Title,
+                Description = entity.Description ?? string.Empty,
+                TaskCategoryName = entity.Category?.Name ?? string.Empty,
+                SpaceName = entity.Space?.Name ?? string.Empty,
                 Status = entity.StatusEnum.ToString(),
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,
                 Term = entity.Term,
-                OwnerUserName = entity.OwnerUser.Name ?? entity.OwnerUser.Email.Value,
-                ResponsibleUserName = entity.ResponsibleUser?.Name ?? ""
+                OwnerUserName = entity.OwnerUser?.Name ?? entity.OwnerUser?.Email.Value ?? string.Empty,
+                ResponsibleUserName = entity.ResponsibleUser?.Name ?? string.Empty
             };
         }
     }
