@@ -15,19 +15,13 @@ namespace TaskManager.Adapters.Mappers
         {
             return new TaskCategoryDTO()
             {
-                Id = entity.Id,
-                Name = entity.Name,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt
+                Id=entity.Id,
+                Name=entity.Name
             };
         }
 
-        public static TaskCategoryEntity ModelToEntity(CreateTaskCategoryModel model)
+        public static TaskCategoryEntity ModelToEntity(CreateTaskCategoryModel model, )
         {
-            // O construtor de TaskCategoryEntity espera (Guid userId, string name)
-            // Como o userId não está presente no model, assumimos que será atribuído posteriormente
-            // Para evitar criar uma entidade com userId inválido, lançamos exceção se necessário.
-            // No entanto, para compatibilidade mínima, criaremos com Guid.Empty. O UseCase deve corrigir isso.
             return new TaskCategoryEntity(Guid.Empty, model.Name);
         }
     }

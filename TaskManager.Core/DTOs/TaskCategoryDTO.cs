@@ -10,11 +10,14 @@ namespace TaskManager.Adapters.DTOs
 {
     public sealed class TaskCategoryDTO
     {
-        public TaskCategoryEntity ModelToEntity(CreateTaskCategoryModel model)
+
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public TaskCategoryEntity ModelToEntity(CreateTaskCategoryModel model, Guid userId)
         {
             return new TaskCategoryEntity
                 (
-                    model.
+                    userId,
                     model.Name
                 );
         }
