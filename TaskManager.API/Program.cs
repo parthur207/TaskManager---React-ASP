@@ -1,69 +1,75 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
-using TaskManager.Adapters.Adapters.Task;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using TaskManager.Adapters.DI;
-using TaskManager.Adapters.Persistence;
-using TaskManager.Adapters.Security;
-using TaskManager.API.Facades;
+using TaskManager.API.Facades.DI;
 using TaskManager.Core.DI;
-using TaskManager.Core.Ports.Persistence.Task;
-using TaskManager.Core.Ports.Security;
 
-namespace TaskManager.API
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddOpenApiDocument(options =>
 {
-    public class Program
+    options.Title = "TaskManager API";
+    options.Version = "v1";
+    options.Description = "API de gerenciamento de tarefas";
+
+    options.AddSecurity("Bearer", new OpenApiSecurityScheme
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        Description = "Insira o token JWT no campo abaixo."
+    });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+    options.OperationProcessors.Add(
+        new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+});
 
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "TaskManager",
-                    Version = "v1",
-                });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
 
+builder.Services.AddAuthorization();
 
-                //Facades
-                builder.Services.AddScoped<TaskUseCaseFacade>();
-                builder.Services.AddScoped<TaskCategoryUseCaseFacade>();
-                builder.Services.AddScoped<UserUseCaseFacade>();
+builder.Services.AddCore();
+builder.Services.AddAdapters(builder.Configuration);
+builder.Services.AddFacades();
 
-                builder.Services.AddCore();
-                builder.Services.AddAdapters(builder.Configuration);
-                builder.Services.AddHttpContextAccessor();
+var app = builder.Build();
 
-                //Autenticação JWT
-
-                //Autorização
-                builder.Services.AddAuthorization();
-
-                var app = builder.Build();
-
-                //pipeline HTTP
-                if (app.Environment.IsDevelopment())
-                {
-                    app.UseSwagger();
-                    app.UseSwaggerUI(c =>
-                    {
-                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "E-Commerce API v1");
-                    });
-                }
-
-                app.UseHttpsRedirection();
-
-                app.UseAuthentication();
-                app.UseAuthorization();
-
-                app.MapControllers();
-
-                app.Run();
-            });
-        }
-    }
+if (app.Environment.IsDevelopment())
+{
+    app.UseOpenApi();
+    app.UseSwaggerUi(settings =>
+    {
+        settings.DocumentTitle = "TaskManager API";
+        settings.Path = "/swagger";
+    });
 }
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
