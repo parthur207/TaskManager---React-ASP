@@ -10,7 +10,8 @@ namespace TaskManager.Core.UseCases.Space
 {
     internal class DeleteSpaceUseCase : IDeleteSpaceUseCase
     {
-        public Task<SimpleResponseModel> ExecuteAsync(Guid spaceId)
+        private readonly IDeleteSpa
+        public async Task<SimpleResponseModel> ExecuteAsync(Guid spaceId)
         {
             throw new NotImplementedException();
         }

@@ -49,7 +49,7 @@ namespace TaskManager.Core.UseCases.Space
             {
                 foreach (var email in model.MembersEmails.Distinct())
                 {
-                    // Não adiciona o próprio criador como membro duplicado
+                    //Não adiciona o próprio criador como membro duplicado
                     if (email.Equals(_currentUserPort.Email, StringComparison.OrdinalIgnoreCase))
                         continue;
 
