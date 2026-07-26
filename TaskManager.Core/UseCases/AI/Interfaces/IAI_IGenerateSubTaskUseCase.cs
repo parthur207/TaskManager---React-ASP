@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using TaskManager.Core.Entities;
 using TaskManager.Core.ResponsePattern;
 
-namespace TaskManager.Core.Ports.Persistence.Task
+namespace TaskManager.Core.UseCases.AI.Interfaces
 {
-    public interface IGetTaskByIdPort
+    public interface IAI_IGenerateSubTaskUseCase
     {
-        Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid SpaceId, Guid UserId);
+        Task<ResponseModel<List<TaskChildrenEntity>>> ExecuteAsync(Guid idTask);
     }
 }

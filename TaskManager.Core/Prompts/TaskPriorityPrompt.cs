@@ -5,24 +5,26 @@ using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Core.DTOs;
 using TaskManager.Core.Entities;
 
 namespace TaskManager.Core.Prompts
 {
     public class TaskPriorityPrompt
     {
-        public string Prompt { get; private set; } =
+        private string Prompt { get; set; } =
             @"Você é um especialista em priorização inteligente de tarefas.
 
             Sua função é analisar uma lista de tarefas recebida em formato JSON e ordená-las da MAIS prioritária para a MENOS prioritária.
 
             Cada tarefa possui a seguinte estrutura:
             {
-              ""title"": ""string"",
-              ""description"": ""string | null"",
-              ""spaceName"": ""string"",
-              ""status"": ""string"",
-              ""term"": ""yyyy-MM-dd""
+                ""Id"": ""<GUID>"",
+                ""Title"": ""<Título da Tarefa>"",
+                ""Description"": ""<Descrição da Tarefa>"",
+                ""DueDate"": ""<Data de Vencimento no formato ISO 8601>"",
+                ""Priority"": <Prioridade da Tarefa (1-5)>,)9l
+                ""Status"": ""<Status da Tarefa (Pendente, Em Progresso, Concluída)>""
             }
 
             CRITÉRIOS DE PRIORIZAÇÃO:
@@ -64,6 +66,7 @@ namespace TaskManager.Core.Prompts
             {
               ""prioritizedTasks"": [
                 {
+                  ""id"": ""GUID da tarefa"",
                   ""name"": ""Nome exato da tarefa"",
                   ""priorityPosition"": 1,
                   ""reason"": ""Motivo resumido da priorização.""
@@ -81,19 +84,18 @@ namespace TaskManager.Core.Prompts
             LISTA DE TAREFAS:
             {{TASKS_JSON}}
             ";
-        public JsonContent PromptBuilder(IList<TaskEntity> Dados)
+
+        public string PromptBuilder(TaskDTO Task)
         {
-            return JsonContent.Create(new
+            Prompt = Prompt.Replace("{{TASK_JSON}}", System.Text.Json.JsonSerializer.Serialize(new TaskDTO
             {
-                prompt = Prompt.Replace("{{TASKS_JSON}}", System.Text.Json.JsonSerializer.Serialize(Dados.Select(t => new
-                {
-                    title = t.Title,
-                    description = t.Description,
-                    spaceName = t.Space.Name,
-                    status = t.StatusEnum.ToString(),
-                    term = t.Term.ToString("yyyy-MM-dd")
-                })))
-            });
-        }        
+                Title = Task.Title,
+                Description = Task.Description,
+                Status = Task.Status,
+                Term = Task.Term
+            }));
+
+            return Prompt;
+        }
     }
 }

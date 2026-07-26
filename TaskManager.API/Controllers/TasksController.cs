@@ -9,7 +9,7 @@ namespace TaskManager.API.Controllers
     [ApiController]
     [Authorize]
     [Route("api/task")]
-    public class TasksController : Controller
+    public class TasksController : ControllerBase
     {
         private readonly ILogger<TasksController> _logger;
         private readonly TaskUseCaseFacade _taskUseCaseFacade;

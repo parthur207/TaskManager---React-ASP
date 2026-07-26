@@ -50,9 +50,9 @@ namespace TaskManager.Adapters.Adapters.Space
                 _context.SpaceMember.Remove(membership);
                 await _context.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"Space_{spaceId}");
-                await _cachingPort.RemoveAsync($"spacesUser_{userId}");
-                await _cachingPort.RemoveAsync($"users_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_SideBar}_{userId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space_Members}_{spaceId}");
 
                 response.Message = "Você saiu do espaço com sucesso.";
                 response.Status = ResponseStatusEnum.Success;

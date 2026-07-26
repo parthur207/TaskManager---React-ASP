@@ -11,6 +11,7 @@ namespace TaskManager.API.Facades.DI
             services.AddScoped<TaskUseCaseFacade>();
             services.AddScoped<TaskCategoryUseCaseFacade>();
             services.AddScoped<SpaceUseCaseFacade>();
+            services.AddScoped<AiUseCaseCaseFacade>();
             return services;
         }
     }

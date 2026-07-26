@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskManager.Core.Ports.AI
+namespace TaskManager.Core.DTOs
 {
-    public interface ITaskAIAssistantPort
+    public class TaskChildrenDTO
     {
     }
 }

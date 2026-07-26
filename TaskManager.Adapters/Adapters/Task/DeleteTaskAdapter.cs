@@ -39,9 +39,9 @@ namespace TaskManager.Adapters.Adapters.Task
                 _contextTask.Task.Remove(entity);
                 await _contextTask.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"task_{entity.Id}");
-                await _cachingPort.RemoveAsync($"spacesUser_{entity.SpaceId}");
-                await _cachingPort.RemoveAsync($"Space_{entity.SpaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Task}_{entity.Id}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{entity.SpaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space_Tasks}_{entity.SpaceId}");
 
 
                 Response.Message = "Tarefa excluída com sucesso.";

@@ -70,9 +70,9 @@ namespace TaskManager.Adapters.Adapters.Space
                 _context.SpaceMember.RemoveRange(toRemove);
                 await _context.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"Space_{spaceId}");
-                await _cachingPort.RemoveAsync($"spacesUser_{userId}");
-                await _cachingPort.RemoveAsync($"users_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_SideBar}_{userId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space_Members}_{spaceId}");
 
                 response.Status = ResponseStatusEnum.Success;
                 response.Message = "Membros removidos com sucesso.";

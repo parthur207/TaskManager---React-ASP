@@ -16,7 +16,6 @@ public class CachingService : ICachingPort
     public async Task<T?> GetAsync<T>(string key)
     {
         var value = await _cache.GetStringAsync(key);
-
         if (string.IsNullOrEmpty(value))
             return default;
 

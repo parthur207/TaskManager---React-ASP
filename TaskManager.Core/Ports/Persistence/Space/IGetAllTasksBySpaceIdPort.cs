@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Core.DTOs;
 using TaskManager.Core.Entities;
 using TaskManager.Core.ResponsePattern;
 
-namespace TaskManager.Core.Ports.Persistence.Task
+namespace TaskManager.Core.Ports.Persistence.Space
 {
-    public interface IGetTaskByIdPort
+    public interface IGetAllTasksBySpaceIdPort
     {
-        Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid SpaceId, Guid UserId);
+        Task<ResponseModel<IEnumerable<TaskEntity>>> ExecuteAsync(Guid spaceId);
     }
 }

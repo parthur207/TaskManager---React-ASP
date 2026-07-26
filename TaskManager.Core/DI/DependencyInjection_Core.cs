@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TaskManager.Core.Prompts;
 using TaskManager.Core.UseCases.Space;
 using TaskManager.Core.UseCases.Space.Interfaces;
 using TaskManager.Core.UseCases.Task;
@@ -45,6 +46,9 @@ namespace TaskManager.Core.DI
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IGetDataUserProfileUseCase, GetDataUserProfileUseCase>();
 
+            services.AddSingleton<TaskPriorityPrompt>();
+            services.AddSingleton<ChildTaskPrompt>();
+            services.AddSingleton<TaskExecutionPlanPrompt>();
             return services;
         }
     }

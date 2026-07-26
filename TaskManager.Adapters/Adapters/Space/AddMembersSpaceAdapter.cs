@@ -77,8 +77,8 @@ namespace TaskManager.Adapters.Adapters.Space
                 {
                     await _context.SpaceMember.AddRangeAsync(newMembers);
                     await _context.SaveChangesAsync();
-                    await _cachingPort.RemoveAsync($"Space_{spaceId}"); 
-                    await _cachingPort.RemoveAsync($"spacesUser_{userId}");
+                    await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{spaceId}"); 
+                    await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_SideBar}_{userId}");
                 }
 
                 response.Status = ResponseStatusEnum.Success;

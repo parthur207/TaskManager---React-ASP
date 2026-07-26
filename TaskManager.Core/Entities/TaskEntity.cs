@@ -22,7 +22,7 @@ namespace TaskManager.Core.Entities
             SpaceId = spaceId;
             OwnerId = ownerId;
             ResponsibleUserId = responsibleUserId;
-            TaskChildrens = [];
+            ChildTasks = [];
             StatusEnum = TaskStatusEnum.NotStarted;
             Term = term;
             CreatedAt = DateTime.UtcNow;
@@ -62,7 +62,7 @@ namespace TaskManager.Core.Entities
         public SpaceEntity Space { get;private set; }
 
         [JsonInclude]
-        public IList<TaskChildrenEntity>? TaskChildrens { get; private set; }
+        public IList<TaskChildrenEntity>? ChildTasks { get; private set; }
 
         [JsonInclude]
         public TaskStatusEnum StatusEnum { get; private set; }

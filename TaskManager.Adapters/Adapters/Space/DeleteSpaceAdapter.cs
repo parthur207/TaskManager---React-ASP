@@ -50,8 +50,9 @@ namespace TaskManager.Adapters.Adapters.Space
                 await _context.Space.Where(x => x.Id == spaceId).ExecuteDeleteAsync();
                 await _context.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"Space_{spaceId}");
-                await _cachingPort.RemoveAsync($"spacesUser_{userId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_SideBar}_{userId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space_Tasks}_{spaceId}");
 
                 Response.Status = ResponseStatusEnum.Success;
                 Response.Message = "Espaço excluído com sucesso.";

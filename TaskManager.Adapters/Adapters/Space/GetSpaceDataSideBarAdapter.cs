@@ -45,7 +45,7 @@ namespace TaskManager.Adapters.Adapters.Space
                     return Response;
                 }
 
-                var responseCache = await _cachingPort.GetAsync<IEnumerable<SpaceEntity>>($"spacesUser_{userId}");
+                var responseCache = await _cachingPort.GetAsync<IEnumerable<SpaceEntity>>($"{KeysCachingEnum.Spaces_SideBar}_{userId}");
 
                 if (responseCache!=null)
                 {
@@ -59,7 +59,7 @@ namespace TaskManager.Adapters.Adapters.Space
                     .Any(x=>x.UserId==userId))
                     .ToListAsync();
 
-                await _cachingPort.SetAsync($"spacesUser_{userId}", spaces, TimeSpan.FromMinutes(5));
+                await _cachingPort.SetAsync($"{KeysCachingEnum.Spaces_SideBar}_{userId}", spaces, TimeSpan.FromMinutes(5));
 
                 Response.Content= spaces;
                 Response.Status = ResponseStatusEnum.Success;

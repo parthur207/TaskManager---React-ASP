@@ -8,7 +8,7 @@ namespace TaskManager.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private readonly UserUseCaseFacade _userUseCaseFacade;
         public UserController(UserUseCaseFacade userUseCaseFacade)

@@ -10,6 +10,7 @@ using TaskManager.Core.Entities;
 using TaskManager.Core.Enums;
 using TaskManager.Core.Ports.Caching;
 using TaskManager.Core.Ports.Persistence.Task;
+using TaskManager.Core.Ports.ReadServices;
 using TaskManager.Core.ResponsePattern;
 using TaskManager.Core.UseCases.Task.Interfaces;
 
@@ -19,27 +20,36 @@ namespace TaskManager.Adapters.Adapters.Task
     {
         private readonly DbContextTaskManager _context;
         private readonly ICachingPort _cachingPort;
-
-        public GetTaskByIdAdapter(DbContextTaskManager context, ICachingPort cachingPort = null)
+        private readonly ISpaceMembershipQueryPort _spaceMembershipQueryPort;
+        public GetTaskByIdAdapter(DbContextTaskManager context, ICachingPort cachingPort, ISpaceMembershipQueryPort spaceMembershipQueryPort)
         {
             _context = context;
             _cachingPort = cachingPort;
+            _spaceMembershipQueryPort = spaceMembershipQueryPort;
         }
 
-        public async Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid UserId)
+        public async Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid SpaceId, Guid UserId)
         {
             var Response = new ResponseModel<TaskEntity>();
             try
             {
-                if (TaskId == Guid.Empty)
+                var isUserMember = await _spaceMembershipQueryPort.IsUserMemberAsync(UserId, SpaceId);
+                if (!isUserMember.Content)
                 {
-                    Response.Status = ResponseStatusEnum.Error;
-                    Response.Message = "ID da tarefa inválido.";
+                    Response.Message=isUserMember.Message;
+                    Response.Status = ResponseStatusEnum.Unauthorized;
+                    return Response;
+                }
+
+                if (!await _context.Space.AnyAsync(x=>x.Tasks.Any(y=>y.Id==TaskId)))
+                {
+                    Response.Status = ResponseStatusEnum.NotFound;
+                    Response.Message = "Erro. Tarefa não encontrada no espaço informado.";
                     return Response;
                 }
 
                 var responseCache = await _cachingPort
-                    .GetAsync<TaskEntity?>($"task_{TaskId}");
+                    .GetAsync<TaskEntity?>($"{KeysCachingEnum.Task}_{TaskId}");
                 
                 if (responseCache != null)
                 {
@@ -53,24 +63,17 @@ namespace TaskManager.Adapters.Adapters.Task
                     .Include(t => t.ResponsibleUser)
                     .Include(t => t.Category)
                     .Include(t => t.Space)
-                    .Include(x=>x.TaskChildrens)
+                    .Include(x=>x.ChildTasks)
                     .FirstOrDefaultAsync(t => t.Id == TaskId);
 
                 if (task is null)
                 {
                     Response.Status = ResponseStatusEnum.NotFound;
-                    Response.Message = "Tarefa não encontrada.";
+                    Response.Message = "Erro. Tarefa não encontrada.";
                     return Response;
                 }
 
-                if (task.OwnerId != UserId && task.ResponsibleUserId != UserId)
-                {
-                    Response.Status = ResponseStatusEnum.Unauthorized;
-                    Response.Message = "Usuário sem permissão para visualizar esta tarefa.";
-                    return Response;
-                }
-
-                await _cachingPort.SetAsync($"task_{TaskId}", task, TimeSpan.FromMinutes(5));
+                await _cachingPort.SetAsync($"{KeysCachingEnum.Task}_{TaskId}", task, TimeSpan.FromMinutes(5));
 
                 Response.Status = ResponseStatusEnum.Success;
                 Response.Content = task;

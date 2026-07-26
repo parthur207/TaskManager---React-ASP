@@ -44,7 +44,7 @@ namespace TaskManager.Adapters.ExternalServices.AI
                 return Response;
             }
 
-            var result = await response.Content.ReadFromJsonAsync<OllamaDTO>();
+            var result = await response.Content.ReadFromJsonAsync<OllamaDTO<object>>();
 
             if (result is null)
             {

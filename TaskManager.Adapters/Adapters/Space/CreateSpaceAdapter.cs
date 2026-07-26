@@ -34,7 +34,7 @@ namespace TaskManager.Adapters.Adapters.Space
                 if (alreadyExists)
                 {
                     response.Status = ResponseStatusEnum.Error;
-                    response.Message = "Já existe um espaço com este nome para o usuário.";
+                    response.Message = "Erro. Você já possui um espaço com este nome.";
                     return response;
                 }
 

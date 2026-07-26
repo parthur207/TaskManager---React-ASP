@@ -44,6 +44,7 @@ namespace TaskManager.Adapters.Adapters.User
                 await _context.SaveChangesAsync();
 
                 await _cachingPort.RemoveAsync($"userProfile_{userId}");
+                await _cachingPort.RemoveAsync($"{user.Email.Value}");
 
                 response.Status = ResponseStatusEnum.Success;
                 response.Message = "Conta inativada com sucesso.";

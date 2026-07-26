@@ -43,7 +43,7 @@ namespace TaskManager.Adapters.Adapters.Space
                     return Response;
                 }
 
-                var responseCache = await _cachingPort.GetAsync<SpaceEntity?>($"space_{spaceId}");
+                var responseCache = await _cachingPort.GetAsync<SpaceEntity?>($"{KeysCachingEnum.Space}_{spaceId}");
 
                 if (responseCache != null)
                 {
@@ -59,7 +59,7 @@ namespace TaskManager.Adapters.Adapters.Space
                         .ThenInclude(x=>x.User)
                     .FirstOrDefaultAsync(x => x.Id == spaceId);
 
-                await _cachingPort.SetAsync($"space_{spaceId}", space, TimeSpan.FromMinutes(5));
+                await _cachingPort.SetAsync($"{KeysCachingEnum.Space}_{spaceId}", space, TimeSpan.FromMinutes(5));
 
                 Response.Content = space;
                 Response.Status = ResponseStatusEnum.Success;

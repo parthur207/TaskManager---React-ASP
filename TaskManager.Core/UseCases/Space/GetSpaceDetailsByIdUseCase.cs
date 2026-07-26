@@ -35,8 +35,7 @@ namespace TaskManager.Core.UseCases.Space
                 return Response;
             }
 
-            var responseRepository = await _getSpacesIdByUserIdPort
-                .ExecuteAsync(_currentUserPort.UserId, spaceId);
+            var responseRepository = await _getSpacesIdByUserIdPort.ExecuteAsync(_currentUserPort.UserId, spaceId);
 
             if (responseRepository.Status != ResponseStatusEnum.Success)
             {

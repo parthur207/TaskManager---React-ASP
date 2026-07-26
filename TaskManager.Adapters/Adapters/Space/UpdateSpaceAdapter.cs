@@ -47,7 +47,7 @@ namespace TaskManager.Adapters.Adapters.Space
 
                 await _context.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"Space_{spaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{spaceId}");
 
                 Response.Status = ResponseStatusEnum.Success;
                 Response.Message = "Espaço atualizado com sucesso.";

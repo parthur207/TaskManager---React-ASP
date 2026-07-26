@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaskManager.Core.DTOs
 {
-    public class OllamaDTO
+    public class OllamaDTO<T>
     {
-        public string Response { get; set; }    
+        public T? Response { get; set; }    
     }
 }

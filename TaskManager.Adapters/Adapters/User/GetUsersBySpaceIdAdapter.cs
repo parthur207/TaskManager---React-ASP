@@ -36,7 +36,7 @@ namespace TaskManager.Adapters.Adapters.User
                     return Response;
                 }
 
-                var responseCache = await _cachingPort.GetAsync<IEnumerable<string>>($"users_{spaceId}");
+                var responseCache = await _cachingPort.GetAsync<IEnumerable<string>>($"{KeysCachingEnum.Space_Members}_{spaceId}");
 
                 if (responseCache != null)
                 {
@@ -54,7 +54,7 @@ namespace TaskManager.Adapters.Adapters.User
                     return Response;
                 }
 
-                await _cachingPort.SetAsync($"users_{spaceId}", users, TimeSpan.FromMinutes(5));
+                await _cachingPort.SetAsync($"{KeysCachingEnum.Space_Members}_{spaceId}", users, TimeSpan.FromMinutes(5));
 
                 Response.Content = users;
                 Response.Status = ResponseStatusEnum.Success;
