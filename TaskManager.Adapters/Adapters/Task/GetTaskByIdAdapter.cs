@@ -20,7 +20,7 @@ namespace TaskManager.Adapters.Adapters.Task
     {
         private readonly DbContextTaskManager _context;
         private readonly ICachingPort _cachingPort;
-        public GetTaskByIdAdapter(DbContextTaskManager context, ICachingPort cachingPort, ISpaceMembershipQueryPort spaceMembershipQueryPort)
+        public GetTaskByIdAdapter(DbContextTaskManager context, ICachingPort cachingPort)
         {
             _context = context;
             _cachingPort = cachingPort;

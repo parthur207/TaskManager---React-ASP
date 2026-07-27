@@ -117,6 +117,28 @@ namespace TaskManager.API.Controllers
                 default:
                     return StatusCode(StatusCodes.Status500InternalServerError, "Erro inesperado.");
             }
-        } 
+        }
+
+        [Authorize]
+        [HttpPut("delete")]
+        public async Task<IActionResult> DeleteUser()
+        {
+            var Response = await _userUseCaseFacade.Delete.ExecuteAsync();
+            switch (Response.Status)
+            {
+                case ResponseStatusEnum.Error:
+                    return BadRequest(Response);
+                case ResponseStatusEnum.NotFound:
+                    return NotFound(Response);
+                case ResponseStatusEnum.Success:
+                    return Ok(Response);
+                case ResponseStatusEnum.Unauthorized:
+                    return Unauthorized(Response);
+                case ResponseStatusEnum.CriticalError:
+                    return BadRequest(Response);
+                default:
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Erro inesperado.");
+            }
+        }
     }
 }

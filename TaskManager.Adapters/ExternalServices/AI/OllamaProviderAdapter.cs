@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using TaskManager.Core.DTOs;
 using TaskManager.Core.Enums;
 using TaskManager.Core.Ports.AI;
@@ -15,6 +11,11 @@ namespace TaskManager.Adapters.ExternalServices.AI
     {
         private readonly HttpClient _http;
 
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         public OllamaProviderAdapter(HttpClient http)
         {
             _http = http;
@@ -24,6 +25,13 @@ namespace TaskManager.Adapters.ExternalServices.AI
         {
             var Response = new ResponseModel<object>();
 
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                Response.Status = ResponseStatusEnum.Error;
+                Response.Message = "O prompt não pode ser nulo ou vazio.";
+                return Response;
+            }
+
             var request = new
             {
                 model = "qwen3:8b",
@@ -31,32 +39,50 @@ namespace TaskManager.Adapters.ExternalServices.AI
                 stream = false
             };
 
-            var response = await _http.PostAsJsonAsync(
-                "api/generate",
-                request);
-
-            response.EnsureSuccessStatusCode();
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                Response.Message = $"Ocorreu um erro inesperado ao se comunicar com o Ollama: {response.ReasonPhrase}";
+                var response = await _http.PostAsJsonAsync("api/generate", request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    Response.Status = ResponseStatusEnum.CriticalError;
+                    Response.Message = $"Ocorreu um erro ao se comunicar com o Ollama ({(int)response.StatusCode} - {response.ReasonPhrase}). {errorBody}";
+                    return Response;
+                }
+
+                var result = await response.Content
+                    .ReadFromJsonAsync<OllamaDTO<string>>(_jsonOptions);
+
+                if (result is null || string.IsNullOrWhiteSpace(result.Response))
+                {
+                    Response.Status = ResponseStatusEnum.Error;
+                    Response.Message = "Ocorreu um erro ao processar a resposta do Ollama.";
+                    return Response;
+                }
+
+                Response.Status = ResponseStatusEnum.Success;
+                Response.Content = result.Response;
+                return Response;
+            }
+            catch (HttpRequestException ex)
+            {
                 Response.Status = ResponseStatusEnum.CriticalError;
+                Response.Message = $"Falha de comunicação com o Ollama. Verifique se o serviço está acessível na rede. Detalhes: {ex.Message}";
                 return Response;
             }
-
-            var result = await response.Content.ReadFromJsonAsync<OllamaDTO<object>>();
-
-            if (result is null)
+            catch (JsonException ex)
             {
-                Response.Status = ResponseStatusEnum.Error;
-                Response.Message = "Ocorreu um erro ao processar a resposta do Ollama.";
+                Response.Status = ResponseStatusEnum.CriticalError;
+                Response.Message = $"Falha ao interpretar a resposta do Ollama. Detalhes: {ex.Message}";
                 return Response;
             }
-
-            Response.Status = ResponseStatusEnum.Success;
-            Response.Content = result;
-
-            return Response;
+            catch (TaskCanceledException ex)
+            {
+                Response.Status = ResponseStatusEnum.CriticalError;
+                Response.Message = $"Tempo limite excedido ao aguardar resposta do Ollama. Detalhes: {ex.Message}";
+                return Response;
+            }
         }
     }
 }

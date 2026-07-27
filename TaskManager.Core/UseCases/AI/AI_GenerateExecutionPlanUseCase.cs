@@ -12,11 +12,11 @@ namespace TaskManager.Core.UseCases.AI
     public class AI_GenerateExecutionPlanUseCase : IAI_GenerateExecutionPlanUseCase
     {
         private readonly IGetTaskByIdPort _getTaskByIdPort;
-        private readonly ICurrentUserPort _currentUserPort; 
+        private readonly ICurrentUserPort _currentUserPort;
         private readonly IOllamaProviderPort _ollamaProviderPort;
         private readonly TaskExecutionPlanPrompt _taskExecutionPlanPrompt;
-        
-        public AI_GenerateExecutionPlanUseCase(IGetTaskByIdPort getTaskByIdPort, ICurrentUserPort currentUserPort, 
+
+        public AI_GenerateExecutionPlanUseCase(IGetTaskByIdPort getTaskByIdPort, ICurrentUserPort currentUserPort,
             IOllamaProviderPort ollamaProviderPort, TaskExecutionPlanPrompt taskExecutionPlanPrompt)
         {
             _getTaskByIdPort = getTaskByIdPort;
@@ -29,22 +29,35 @@ namespace TaskManager.Core.UseCases.AI
         {
             var Response = new ResponseModel<string>();
 
+            if (!_currentUserPort.IsAuthenticated)
+            {
+                Response.Message = "Login expirado.";
+                Response.Status = ResponseStatusEnum.Unauthorized;
+                return Response;
+            }
+
             var ResponseRepository = await _getTaskByIdPort.ExecuteAsync(IdTask, _currentUserPort.UserId);
 
-            if (ResponseRepository.Status != ResponseStatusEnum.Success)
+            if (ResponseRepository.Status != ResponseStatusEnum.Success || ResponseRepository.Content is null)
             {
                 Response.Message = ResponseRepository.Message;
                 Response.Status = ResponseRepository.Status;
                 return Response;
             }
 
-            var ResponseIA = await _ollamaProviderPort
-                .GenerateAsync(_taskExecutionPlanPrompt
-                    .PromptBuilder(TaskMapper
-                        .EntityToDTO(ResponseRepository.Content)));
+            var prompt = _taskExecutionPlanPrompt.PromptBuilder(TaskMapper.EntityToDTO(ResponseRepository.Content));
 
-            Response.Content = ResponseIA.Content.ToString();
-            Response.Status=ResponseStatusEnum.Success;
+            var ResponseIA = await _ollamaProviderPort.GenerateAsync(prompt);
+
+            if (ResponseIA.Status != ResponseStatusEnum.Success)
+            {
+                Response.Status = ResponseIA.Status;
+                Response.Message = ResponseIA.Message;
+                return Response;
+            }
+
+            Response.Content = ResponseIA.Content as string ?? string.Empty;
+            Response.Status = ResponseStatusEnum.Success;
             return Response;
         }
     }

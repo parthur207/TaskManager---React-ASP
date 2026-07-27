@@ -59,9 +59,9 @@ namespace TaskManager.Adapters.Adapters.Task
                 _context.Task.Update(existing);
                 await _context.SaveChangesAsync();
 
-                await _cachingPort.RemoveAsync($"task_{entity.Id}");
-                await _cachingPort.RemoveAsync($"spacesUser_{entity.SpaceId}");
-                await _cachingPort.RemoveAsync($"Space_{entity.SpaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Task}_{entity.Id}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_User}{entity.SpaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{entity.SpaceId}");
 
                 Response.Status = ResponseStatusEnum.Success;
                 Response.Message = "Tarefa atualizada com sucesso.";

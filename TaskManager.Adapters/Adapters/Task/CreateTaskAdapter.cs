@@ -11,7 +11,7 @@ namespace TaskManager.Adapters.Adapters.Task
     public class CreateTaskAdapter : ICreateTaskPort
     {
         private readonly DbContextTaskManager _context;
-        public CreateTaskAdapter(DbContextTaskManager context, ICurrentUserPort currentUserPort)
+        public CreateTaskAdapter(DbContextTaskManager context)
         {
             _context = context;
         }

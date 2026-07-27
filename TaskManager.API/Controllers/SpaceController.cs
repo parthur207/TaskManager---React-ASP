@@ -143,5 +143,22 @@ namespace TaskManager.API.Controllers
                 _ => StatusCode(StatusCodes.Status500InternalServerError, "Erro inesperado.")
             };
         }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsersInSpace([FromRoute] Guid spaceId)
+        {
+            var response = await _spaceUseCaseFacade.getUsersBySpaceId.ExecuteAsync(spaceId);
+
+            return response.Status switch
+            {
+                ResponseStatusEnum.Error => BadRequest(response),
+                ResponseStatusEnum.NotFound => NotFound(response),
+                ResponseStatusEnum.Success => Ok(response),
+                ResponseStatusEnum.Unauthorized => Unauthorized(response),
+                ResponseStatusEnum.CriticalError => BadRequest(response),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, "Erro inesperado.")
+            };
+        }
+
     }
 }

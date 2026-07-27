@@ -107,7 +107,7 @@ namespace TaskManager.Core.Entities
             if (StatusEnum != TaskStatusEnum.NotStarted
                && newStatus is TaskStatusEnum.NotStarted)
             {
-                throw new ArgumentException($"Não é possível atribuir o status de '{newStatus.ToString()}', pois a tarefa se encontra com.");
+                throw new ArgumentException($"Não é possível atribuir o status de '{newStatus.ToString()}', pois a tarefa ja se encontra com este status.");
             }
             StatusEnum = newStatus;
             UpdatedAt = DateTime.UtcNow;

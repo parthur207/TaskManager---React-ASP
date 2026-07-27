@@ -35,19 +35,19 @@ namespace TaskManager.Adapters.Adapters.TaskCategory
             var Response= new ResponseModel<IEnumerable<TaskCategoryEntity>>();
             try
             {
-                if (!await _context.TaskCategory.AnyAsync(x => x.SpaceId == spaceId))
-                {
-                    Response.Message = "Nenhuma categoria de tarefa encontrada para o espaço especificado.";
-                    Response.Status = ResponseStatusEnum.Error;
-                    return Response;
-                }
-
                 var IsMemberResponse = await _spaceMembershipQueryPort.IsUserMemberAsync(userId, spaceId);
 
                 if (!IsMemberResponse.Content)
                 {
                     Response.Message = "Você não possui permissão para este espaço.";
                     Response.Status = ResponseStatusEnum.Unauthorized;
+                    return Response;
+                }
+
+                if (!await _context.TaskCategory.AnyAsync(x => x.SpaceId == spaceId))
+                {
+                    Response.Message = "Nenhuma categoria de tarefa encontrada para o espaço especificado.";
+                    Response.Status = ResponseStatusEnum.Error;
                     return Response;
                 }
 
