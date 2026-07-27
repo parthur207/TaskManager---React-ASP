@@ -6,7 +6,7 @@ using TaskManager.Core.UseCases.AI.Interfaces;
 
 namespace TaskManager.Core.UseCases.AI
 {
-    public class AI_GenerateSubTaskUseCase : IAI_IGenerateSubTaskUseCase
+    public class AI_GenerateSubTaskUseCase : IAI_GenerateSubTaskUseCase
     {
         private readonly IGetTaskByIdPort _getTaskByIdPort;
         private readonly IOllamaProviderPort _ollamaProviderPort;

@@ -8,7 +8,7 @@ using TaskManager.Core.ResponsePattern;
 
 namespace TaskManager.Core.UseCases.AI.Interfaces
 {
-    public interface IAI_IGenerateSubTaskUseCase
+    public interface IAI_GenerateSubTaskUseCase
     {
         Task<ResponseModel<List<TaskChildrenEntity>>> ExecuteAsync(Guid idTask);
     }

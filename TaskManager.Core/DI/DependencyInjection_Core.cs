@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TaskManager.Core.Ports.Persistence.Space;
 using TaskManager.Core.Prompts;
+using TaskManager.Core.UseCases.AI;
+using TaskManager.Core.UseCases.AI.Interfaces;
 using TaskManager.Core.UseCases.Space;
 using TaskManager.Core.UseCases.Space.Interfaces;
 using TaskManager.Core.UseCases.Task;
@@ -26,7 +29,7 @@ namespace TaskManager.Core.DI
             services.AddScoped<IGetSpaceDetailsByIdUseCase, GetSpaceDetailsByIdUseCase>();
             services.AddScoped<IGetUsersBySpaceIdUseCase, GetUsersBySpaceIdUseCase>();
 
-            // Task
+            // Task 
             services.AddScoped<ICreateTaskUseCase, CreateTaskUseCase>();
             services.AddScoped<IUpdateTaskDetailsUseCase, UpdateTaskDetailsUseCase>();
             services.AddScoped<IDeleteTaskUseCase, DeleteTaskUseCase>();
@@ -46,9 +49,18 @@ namespace TaskManager.Core.DI
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IGetDataUserProfileUseCase, GetDataUserProfileUseCase>();
 
+
+            //IA
+            services.AddScoped<IAI_PriorityTasksUseCase, AI_PriorityTasksUseCase>();
+            services.AddScoped<IAI_GenerateExecutionPlanUseCase, AI_GenerateExecutionPlanUseCase>();
+            services.AddScoped<IAI_GenerateSubTaskUseCase, AI_GenerateSubTaskUseCase>();
+            services.AddScoped<IAI_RefineTaskAttributesUseCase, AI_RefineTaskAttributesUseCase>();
+
             services.AddSingleton<TaskPriorityPrompt>();
             services.AddSingleton<ChildTaskPrompt>();
             services.AddSingleton<TaskExecutionPlanPrompt>();
+            services.AddSingleton<ChildTaskPrompt>();
+
             return services;
         }
     }
