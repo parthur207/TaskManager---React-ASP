@@ -21,67 +21,104 @@ namespace TaskManager.Adapters.ExternalServices.AI
             _http = http;
         }
 
-        public async Task<ResponseModel<object>> GenerateAsync(string prompt)
+        public async Task<ResponseModel<T>> GenerateAsync<T>(string prompt)
         {
-            var Response = new ResponseModel<object>();
+            var responseModel = new ResponseModel<T>();
 
             if (string.IsNullOrWhiteSpace(prompt))
             {
-                Response.Status = ResponseStatusEnum.Error;
-                Response.Message = "O prompt não pode ser nulo ou vazio.";
-                return Response;
+                responseModel.Status = ResponseStatusEnum.Error;
+                responseModel.Message = "O prompt não pode ser nulo ou vazio.";
+                return responseModel;
             }
 
             var request = new
             {
                 model = "qwen3:8b",
                 prompt,
-                stream = false
+                stream = false,
+                format = "json"
             };
 
             try
             {
-                var response = await _http.PostAsJsonAsync("api/generate", request);
+                var httpResponse = await _http.PostAsJsonAsync("api/generate", request);
 
-                if (!response.IsSuccessStatusCode)
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    var errorBody = await response.Content.ReadAsStringAsync();
-                    Response.Status = ResponseStatusEnum.CriticalError;
-                    Response.Message = $"Ocorreu um erro ao se comunicar com o Ollama ({(int)response.StatusCode} - {response.ReasonPhrase}). {errorBody}";
-                    return Response;
+                    var errorBody = await httpResponse.Content.ReadAsStringAsync();
+
+                    responseModel.Status = ResponseStatusEnum.CriticalError;
+                    responseModel.Message =
+                        $"Ocorreu um erro ao se comunicar com o Ollama ({(int)httpResponse.StatusCode} - {httpResponse.ReasonPhrase}). {errorBody}";
+
+                    return responseModel;
                 }
 
-                var result = await response.Content
+                var ollamaResponse = await httpResponse.Content
                     .ReadFromJsonAsync<OllamaDTO<string>>(_jsonOptions);
 
-                if (result is null || string.IsNullOrWhiteSpace(result.Response))
+                if (ollamaResponse is null || string.IsNullOrWhiteSpace(ollamaResponse.Response))
                 {
-                    Response.Status = ResponseStatusEnum.Error;
-                    Response.Message = "Ocorreu um erro ao processar a resposta do Ollama.";
-                    return Response;
+                    responseModel.Status = ResponseStatusEnum.Error;
+                    responseModel.Message = "O Ollama retornou uma resposta vazia.";
+                    return responseModel;
                 }
 
-                Response.Status = ResponseStatusEnum.Success;
-                Response.Content = result.Response;
-                return Response;
+                T? content;
+
+                try
+                {
+                    content = JsonSerializer.Deserialize<T>(
+                        ollamaResponse.Response,
+                        _jsonOptions);
+                }
+                catch (JsonException ex)
+                {
+                    responseModel.Status = ResponseStatusEnum.Error;
+                    responseModel.Message =
+                        $"O JSON retornado pela IA é inválido. {ex.Message}";
+
+                    return responseModel;
+                }
+
+                if (content is null)
+                {
+                    responseModel.Status = ResponseStatusEnum.Error;
+                    responseModel.Message =
+                        "Não foi possível converter o JSON retornado pela IA para o tipo esperado.";
+
+                    return responseModel;
+                }
+
+                responseModel.Status = ResponseStatusEnum.Success;
+                responseModel.Content = content;
+
+                return responseModel;
             }
             catch (HttpRequestException ex)
             {
-                Response.Status = ResponseStatusEnum.CriticalError;
-                Response.Message = $"Falha de comunicação com o Ollama. Verifique se o serviço está acessível na rede. Detalhes: {ex.Message}";
-                return Response;
-            }
-            catch (JsonException ex)
-            {
-                Response.Status = ResponseStatusEnum.CriticalError;
-                Response.Message = $"Falha ao interpretar a resposta do Ollama. Detalhes: {ex.Message}";
-                return Response;
+                responseModel.Status = ResponseStatusEnum.CriticalError;
+                responseModel.Message =
+                    $"Falha de comunicação com o Ollama. Verifique se o serviço está acessível na rede. Detalhes: {ex.Message}";
+
+                return responseModel;
             }
             catch (TaskCanceledException ex)
             {
-                Response.Status = ResponseStatusEnum.CriticalError;
-                Response.Message = $"Tempo limite excedido ao aguardar resposta do Ollama. Detalhes: {ex.Message}";
-                return Response;
+                responseModel.Status = ResponseStatusEnum.CriticalError;
+                responseModel.Message =
+                    $"Tempo limite excedido ao aguardar resposta do Ollama. Detalhes: {ex.Message}";
+
+                return responseModel;
+            }
+            catch (JsonException ex)
+            {
+                responseModel.Status = ResponseStatusEnum.CriticalError;
+                responseModel.Message =
+                    $"Falha ao interpretar a resposta do Ollama. Detalhes: {ex.Message}";
+
+                return responseModel;
             }
         }
     }

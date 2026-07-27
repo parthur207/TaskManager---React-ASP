@@ -31,7 +31,7 @@ namespace TaskManager.Core.UseCases.Space
             if (!_currentUserPort.IsAuthenticated)
             {
                 Response.Status = ResponseStatusEnum.Unauthorized;
-                Response.Message = "Erro. Efetue o login novamente.";
+                Response.Message = "Sessão expirada. Realize o login novamente.";
                 return Response;
             }
 

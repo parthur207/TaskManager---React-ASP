@@ -28,7 +28,7 @@ namespace TaskManager.Core.UseCases.Space
             var Response= new ResponseModel<IEnumerable<SpaceItemDTO>>();
             if (!_currentUserPort.IsAuthenticated)
             {
-                Response.Message = "";
+                Response.Message = "Sessão expirada. Realize o login novamente.";
                 Response.Status = ResponseStatusEnum.Unauthorized;
                 return Response;
             }

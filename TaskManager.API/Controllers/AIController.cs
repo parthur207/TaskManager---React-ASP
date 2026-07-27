@@ -15,7 +15,7 @@ namespace TaskManager.API.Controllers
     {
         public readonly IOllamaProviderPort _ollamaProviderPort;
         public readonly AiUseCaseCaseFacade _aiUseCaseCaseFacade;
-        public AIController(IOllamaProviderPort ollamaProviderPort, AiUseCaseCaseFacade aiUseCaseCaseFacade = null)
+        public AIController(IOllamaProviderPort ollamaProviderPort, AiUseCaseCaseFacade aiUseCaseCaseFacade)
         {
             _ollamaProviderPort = ollamaProviderPort;
             _aiUseCaseCaseFacade = aiUseCaseCaseFacade;

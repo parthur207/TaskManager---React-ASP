@@ -60,7 +60,7 @@ namespace TaskManager.Adapters.Adapters.Task
                 await _context.SaveChangesAsync();
 
                 await _cachingPort.RemoveAsync($"{KeysCachingEnum.Task}_{entity.Id}");
-                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_User}{entity.SpaceId}");
+                await _cachingPort.RemoveAsync($"{KeysCachingEnum.Spaces_User}_{entity.SpaceId}");
                 await _cachingPort.RemoveAsync($"{KeysCachingEnum.Space}_{entity.SpaceId}");
 
                 Response.Status = ResponseStatusEnum.Success;

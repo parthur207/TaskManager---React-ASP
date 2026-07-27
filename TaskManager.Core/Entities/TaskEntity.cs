@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -27,6 +29,8 @@ namespace TaskManager.Core.Entities
             Term = term;
             CreatedAt = DateTime.UtcNow;
             PrioritySort = 0;
+            JustifyPriority = null;
+            ExecutionPlan = null;
         }
 
         [JsonInclude]
@@ -79,6 +83,10 @@ namespace TaskManager.Core.Entities
 
         [JsonInclude]
         public int PrioritySort { get; private set; }
+        public string? JustifyPriority { get; private set; }
+
+        [JsonInclude]
+        public string? ExecutionPlan { get; private set; }
 
         public void UpdateTitleOrDescription(string newTitle = null, string newDescription = null)
         {
@@ -140,6 +148,15 @@ namespace TaskManager.Core.Entities
                 throw new ArgumentException($"A prioridade '{newPrioritySort.ToString()}' já se encontra definida.");
             }
             PrioritySort = newPrioritySort;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void AssignExecutionPlan(string executionPlan)
+        {
+            if (string.IsNullOrEmpty(executionPlan))
+                throw new ArgumentException("O plano de execução não pode ser nulo ou vazio.");
+
+            ExecutionPlan = executionPlan;
             UpdatedAt = DateTime.UtcNow;
         }
     }

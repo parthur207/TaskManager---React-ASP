@@ -32,7 +32,8 @@ namespace TaskManager.Adapters.Adapters.Task
             try
             {
                 var isUserMember = await _context.SpaceMember
-                    .AnyAsync(x => x.UserId == UserId && x.Space.Tasks.Any(y => y.Id == TaskId));   
+                    .AnyAsync(x => x.UserId == UserId 
+                    && x.Space.Tasks.Any(y => y.Id == TaskId));   
 
                 if (!isUserMember)
                 {

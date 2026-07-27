@@ -13,7 +13,7 @@ namespace TaskManager.Adapters.Adapters.User
     {
         private readonly DbContextTaskManager _context;
         private readonly IPasswordHasher _passwordHasher;
-        public CreateUserAdapter(DbContextTaskManager context, IPasswordHasher passwordHasher = null)
+        public CreateUserAdapter(DbContextTaskManager context, IPasswordHasher passwordHasher)
         {
             _context = context;
             _passwordHasher = passwordHasher;

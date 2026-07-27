@@ -12,6 +12,8 @@ using TaskManager.Core.Entities;
 using TaskManager.Core.Enums;
 using TaskManager.Core.Ports.Caching;
 using TaskManager.Core.Ports.Persistence.Space;
+using TaskManager.Core.Ports.ReadServices;
+using TaskManager.Core.Ports.Security;
 using TaskManager.Core.ResponsePattern;
 
 namespace TaskManager.Adapters.Adapters.Space
@@ -20,22 +22,35 @@ namespace TaskManager.Adapters.Adapters.Space
     {
         private readonly DbContextTaskManager _context;
         private readonly ICachingPort _cachingPort;
-
-        public GetAllTasksBySpaceIdAdapter(DbContextTaskManager context, ICachingPort cachingPort)
+        private readonly ISpaceMembershipQueryPort _spaceMembershipQueryPort;
+        private readonly ICurrentUserPort _currentUserPort;
+        public GetAllTasksBySpaceIdAdapter(DbContextTaskManager context, ICachingPort cachingPort, 
+            ISpaceMembershipQueryPort spaceMembershipQueryPort, ICurrentUserPort currentUserPort)
         {
             _context = context;
             _cachingPort = cachingPort;
+            _spaceMembershipQueryPort = spaceMembershipQueryPort;
+            _currentUserPort = currentUserPort;
         }
 
-        public async Task<ResponseModel<IEnumerable<TaskEntity>?>> ExecuteAsync(Guid spaceId)
+        public async Task<ResponseModel<IEnumerable<TaskEntity>>> ExecuteAsync(Guid spaceId)
         {
             var Response = new ResponseModel<IEnumerable<TaskEntity>>();
             try
             {
-                if (!await _context.Space.AnyAsync(x=>x.Id==spaceId))
+                if (!await _context.Space.AnyAsync(x => x.Id == spaceId))
                 {
                     Response.Message = "Espaço não encontrado.";
                     Response.Status = ResponseStatusEnum.NotFound;
+                    return Response;
+                }
+
+                var IsMember = await _spaceMembershipQueryPort.IsUserMemberAsync(_currentUserPort.UserId, spaceId);
+
+                if (!IsMember.Content)
+                {
+                    Response.Message = "Erro. Você não é membro do espaço.";
+                    Response.Status = ResponseStatusEnum.Unauthorized;
                     return Response;
                 }
 

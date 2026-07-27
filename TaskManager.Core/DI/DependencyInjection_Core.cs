@@ -53,13 +53,13 @@ namespace TaskManager.Core.DI
             //IA
             services.AddScoped<IAI_PriorityTasksUseCase, AI_PriorityTasksUseCase>();
             services.AddScoped<IAI_GenerateExecutionPlanUseCase, AI_GenerateExecutionPlanUseCase>();
-            services.AddScoped<IAI_GenerateSubTaskUseCase, AI_GenerateSubTaskUseCase>();
+            services.AddScoped<IAI_GenerateChildTaskUseCase, AI_GenerateChildTaskUseCase>();
             services.AddScoped<IAI_RefineTaskAttributesUseCase, AI_RefineTaskAttributesUseCase>();
 
             services.AddSingleton<TaskPriorityPrompt>();
             services.AddSingleton<ChildTaskPrompt>();
             services.AddSingleton<TaskExecutionPlanPrompt>();
-            services.AddSingleton<ChildTaskPrompt>();
+            services.AddSingleton<RefineTaskAttributesPrompt>();
 
             return services;
         }

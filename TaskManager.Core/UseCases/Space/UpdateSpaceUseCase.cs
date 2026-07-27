@@ -19,7 +19,7 @@ namespace TaskManager.Core.UseCases.Space
         private readonly IUpdateSpacePort _updateSpacePort;
         private readonly ICurrentUserPort _currentUserPort;
         private readonly ISignalRNotifier _notifier;
-        public UpdateSpaceUseCase(IUpdateSpacePort updateSpacePort, ICurrentUserPort currentUserPort, ISignalRNotifier notifier = null)
+        public UpdateSpaceUseCase(IUpdateSpacePort updateSpacePort, ICurrentUserPort currentUserPort, ISignalRNotifier notifier)
         {
             _updateSpacePort = updateSpacePort;
             _currentUserPort = currentUserPort;
@@ -33,7 +33,7 @@ namespace TaskManager.Core.UseCases.Space
             if (!_currentUserPort.IsAuthenticated)
             {
                 Response.Status = ResponseStatusEnum.Unauthorized;
-                Response.Message = "Erro. Efetue o login novamente.";
+                Response.Message = "Sessão expirada. Realize o login novamente.";
                 return Response;
             }
 

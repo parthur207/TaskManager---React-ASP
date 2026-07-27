@@ -144,7 +144,7 @@ namespace TaskManager.API.Controllers
             };
         }
 
-        [HttpGet("users")]
+        [HttpGet("users/{spaceId}")]
         public async Task<IActionResult> GetUsersInSpace([FromRoute] Guid spaceId)
         {
             var response = await _spaceUseCaseFacade.getUsersBySpaceId.ExecuteAsync(spaceId);

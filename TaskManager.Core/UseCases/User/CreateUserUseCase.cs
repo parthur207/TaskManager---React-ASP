@@ -3,6 +3,7 @@ using TaskManager.Core.Models.User;
 using TaskManager.Core.Ports.Persistence.User;
 using TaskManager.Core.ResponsePattern;
 using TaskManager.Core.UseCases.User.Interfaces;
+using TaskManager.Core.ValueObjects;
 
 namespace TaskManager.Core.UseCases.User
 {
@@ -32,6 +33,9 @@ namespace TaskManager.Core.UseCases.User
                 Response.Status = ResponseStatusEnum.Error;
                 return Response;
             }
+
+            var passwordVO= new PasswordVO(model.Password, false, false);
+            model.Password = passwordVO.Value;
 
             var resultRepository= await _createUserPort.ExecuteAsync(model);
 

@@ -31,8 +31,8 @@ namespace TaskManager.Core.UseCases.AI
 
             if (!_currentUserPort.IsAuthenticated)
             {
-                Response.Message = "Login expirado.";
                 Response.Status = ResponseStatusEnum.Unauthorized;
+                Response.Message = "Sessão expirada. Realize o login novamente.";
                 return Response;
             }
 
@@ -45,9 +45,11 @@ namespace TaskManager.Core.UseCases.AI
                 return Response;
             }
 
-            var prompt = _taskExecutionPlanPrompt.PromptBuilder(TaskMapper.EntityToDTO(ResponseRepository.Content));
+            var prompt = _taskExecutionPlanPrompt
+                .PromptBuilder(TaskMapper
+                    .EntityToDTO(ResponseRepository.Content));
 
-            var ResponseIA = await _ollamaProviderPort.GenerateAsync(prompt);
+            var ResponseIA = await _ollamaProviderPort.GenerateAsync<string>(prompt);
 
             if (ResponseIA.Status != ResponseStatusEnum.Success)
             {
@@ -55,6 +57,8 @@ namespace TaskManager.Core.UseCases.AI
                 Response.Message = ResponseIA.Message;
                 return Response;
             }
+
+            
 
             Response.Content = ResponseIA.Content as string ?? string.Empty;
             Response.Status = ResponseStatusEnum.Success;

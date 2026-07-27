@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Core.ResponsePattern;
 
-namespace TaskManager.Core.Ports.AI
+namespace TaskManager.Core.Ports.Persistence.Task
 {
-    public interface IOllamaProviderPort
+    public interface IAssignExecutionPlanTaskPort
     {
-        Task<ResponseModel<T>> GenerateAsync<T>(string prompt);
+        Task<SimpleResponseModel> ExecuteAsync(string? executionPlan);
     }
 }

@@ -19,13 +19,13 @@ namespace TaskManager.Core.UseCases.Task
             _currentUserPort = currentUserPort;
         }
 
-        public async Task<ResponseModel<TaskDTO>> ExecuteAsync(Guid taskId, Guid userId)
+        public async Task<ResponseModel<TaskDTO>> ExecuteAsync(Guid taskId)
         {
             var response = new ResponseModel<TaskDTO>();
 
             if (!_currentUserPort.IsAuthenticated)
             {
-                response.Message = "Login expirado.";
+                response.Message = "Sessão expirada. Realize o login novamente.";
                 response.Status = ResponseStatusEnum.Unauthorized;
                 return response;
             }

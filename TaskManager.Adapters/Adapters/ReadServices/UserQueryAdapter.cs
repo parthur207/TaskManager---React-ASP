@@ -85,7 +85,7 @@ namespace TaskManager.Adapters.Adapters.ReadServices
                 var emailVO = new EmailVO(email);
                 
                 var UserId= _context.User
-                    .Where(x=>x.Email.Equals(emailVO) && x.Status.Equals(UserStatusEnum.Active))
+                    .Where(x=>x.Email.Value.Equals(emailVO.Value) && x.Status.Equals(UserStatusEnum.Active))
                     .Select(x => x.Id);
 
                 if (UserId is null)
@@ -120,7 +120,7 @@ namespace TaskManager.Adapters.Adapters.ReadServices
                 var emailVO = new EmailVO(email);
 
                 var exists = await _context.User
-                    .AnyAsync(x=>x.Email.Equals(email) 
+                    .AnyAsync(x=>x.Email.Value.Equals(emailVO.Value) 
                     && x.Status.Equals(UserStatusEnum.Active));
 
                 if (!exists)

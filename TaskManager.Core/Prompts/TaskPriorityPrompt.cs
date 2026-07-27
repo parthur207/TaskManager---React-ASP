@@ -68,7 +68,7 @@ namespace TaskManager.Core.Prompts
                 {
                   ""id"": ""GUID da tarefa"",
                   ""name"": ""Nome exato da tarefa"",
-                  ""priorityPosition"": 1,
+                  ""priorityPosition"": ""<posição da tarefa>"",
                   ""reason"": ""Motivo resumido da priorização.""
                 }
               ]
@@ -82,19 +82,12 @@ namespace TaskManager.Core.Prompts
             - Ordene corretamente da maior prioridade para a menor.
 
             LISTA DE TAREFAS:
-            {{TASK_JSON}}
+            {{TASKS_JSON}}
             ";
 
-        public string PromptBuilder(TaskDTO Task)
+        public string PromptBuilder(IEnumerable<TaskDTO> Tasks)
         {
-            Prompt = Prompt.Replace("{{TASK_JSON}}", System.Text.Json.JsonSerializer.Serialize(new TaskDTO
-            {
-                Title = Task.Title,
-                Description = Task.Description,
-                Status = Task.Status,
-                Term = Task.Term
-            }));
-
+            Prompt = Prompt.Replace("{{TASKS_JSON}}", System.Text.Json.JsonSerializer.Serialize(Tasks));
             return Prompt;
         }
     }

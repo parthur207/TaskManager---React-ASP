@@ -120,7 +120,7 @@ namespace TaskManager.API.Controllers
         }
 
         [Authorize]
-        [HttpPut("delete")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUser()
         {
             var Response = await _userUseCaseFacade.Delete.ExecuteAsync();

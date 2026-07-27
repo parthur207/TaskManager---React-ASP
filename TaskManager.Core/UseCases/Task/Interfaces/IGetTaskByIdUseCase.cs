@@ -5,6 +5,6 @@ namespace TaskManager.Core.UseCases.Task.Interfaces
 {
     public interface IGetTaskByIdUseCase
     {
-        Task<ResponseModel<TaskDTO>> ExecuteAsync(Guid taskId, Guid userId);
+        Task<ResponseModel<TaskDTO>> ExecuteAsync(Guid taskId);
     }
 }

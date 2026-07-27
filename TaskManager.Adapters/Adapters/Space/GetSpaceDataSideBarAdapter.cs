@@ -20,7 +20,7 @@ namespace TaskManager.Adapters.Adapters.Space
     {
         private readonly DbContextTaskManager _context;
         private readonly ICachingPort _cachingPort;
-        public GetSpaceDataSideBarAdapter(DbContextTaskManager context, ICachingPort cachingPort = null)
+        public GetSpaceDataSideBarAdapter(DbContextTaskManager context, ICachingPort cachingPort)
         {
             _context = context;
             _cachingPort = cachingPort;

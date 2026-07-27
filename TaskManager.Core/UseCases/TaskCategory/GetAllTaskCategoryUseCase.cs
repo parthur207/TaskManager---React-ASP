@@ -29,7 +29,7 @@ namespace TaskManager.Core.UseCases.TaskCategory
 
             if (!_currentUserPort.IsAuthenticated)
             {
-                Response.Message = "User is not authenticated.";
+                Response.Message = "Sessão expirada. Realize o login novamente.";
                 Response.Status = ResponseStatusEnum.Unauthorized;
                 return Response;
             }

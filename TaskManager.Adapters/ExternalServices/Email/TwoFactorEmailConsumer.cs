@@ -31,7 +31,7 @@ namespace TaskManager.Adapters.ExternalServices.Messaging
         {
             try
             {
-                _channel = await _connectionProvider.Connection.CreateChannelAsync();
+                _channel = await (await _connectionProvider.GetConnectionAsync(stoppingToken)).CreateChannelAsync();
 
                 await _channel.ExchangeDeclareAsync(
                     exchange: _settings.ExchangeName,

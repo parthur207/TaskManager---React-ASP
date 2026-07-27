@@ -80,6 +80,9 @@ namespace TaskManager.Adapters.DI
             services.AddScoped<IEmailSenderPort, EmailSenderAdapter>();
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
 
+            //AI
+            services.AddScoped<IAssignExecutionPlanTaskPort, AssignExecutionPlanTaskAdapter>();
+
             services.AddHostedService<TwoFactorEmailConsumer>();
 
             services.AddSingleton<RabbitMqConnectionProvider>();

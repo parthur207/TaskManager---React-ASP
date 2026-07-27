@@ -2,6 +2,7 @@
 using TaskManager.Adapters.Persistence;
 using TaskManager.Core.Entities;
 using TaskManager.Core.Enums;
+using TaskManager.Core.Ports.Caching;
 using TaskManager.Core.Ports.Persistence.Task;
 using TaskManager.Core.Ports.Security;
 using TaskManager.Core.ResponsePattern;
@@ -11,9 +12,11 @@ namespace TaskManager.Adapters.Adapters.Task
     public class CreateTaskAdapter : ICreateTaskPort
     {
         private readonly DbContextTaskManager _context;
-        public CreateTaskAdapter(DbContextTaskManager context)
+        private readonly ICachingPort _cachingPort;
+        public CreateTaskAdapter(DbContextTaskManager context, ICachingPort cachingPort)
         {
             _context = context;
+            _cachingPort = cachingPort;
         }
 
         public async Task<SimpleResponseModel> ExecuteAsync(TaskEntity entity)
@@ -30,6 +33,8 @@ namespace TaskManager.Adapters.Adapters.Task
 
                 await _context.Task.AddAsync(entity);
                 await _context.SaveChangesAsync();
+
+                await _cachingPort.SetAsync($"{KeysCachingEnum.Task}_{entity.Id}", entity, TimeSpan.FromMinutes(5));
 
                 Response.Status = ResponseStatusEnum.Success;
                 Response.Message = "Tarefa criada com sucesso.";
