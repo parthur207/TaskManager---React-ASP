@@ -10,6 +10,13 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    networks:
+      - databases
+
+networks:
+  databases:
+    external: true
+    name: taskmanager_databases
 
 volumes:
   ollama_data:
