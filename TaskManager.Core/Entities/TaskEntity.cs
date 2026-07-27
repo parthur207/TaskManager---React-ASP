@@ -26,6 +26,7 @@ namespace TaskManager.Core.Entities
             StatusEnum = TaskStatusEnum.NotStarted;
             Term = term;
             CreatedAt = DateTime.UtcNow;
+            PrioritySort = 0;
         }
 
         [JsonInclude]
@@ -76,6 +77,9 @@ namespace TaskManager.Core.Entities
         [JsonInclude]
         public DateOnly Term { get; private set; }
 
+        [JsonInclude]
+        public int PrioritySort { get; private set; }
+
         public void UpdateTitleOrDescription(string newTitle = null, string newDescription = null)
         {
             if (string.IsNullOrEmpty(newTitle) && string.IsNullOrEmpty(newDescription))
@@ -106,6 +110,7 @@ namespace TaskManager.Core.Entities
                 throw new ArgumentException($"Não é possível atribuir o status de '{newStatus.ToString()}', pois a tarefa se encontra com.");
             }
             StatusEnum = newStatus;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void UpdateTerm(DateOnly newTerm)
@@ -115,6 +120,7 @@ namespace TaskManager.Core.Entities
                 throw new ArgumentException($"O prazo '{newTerm.ToString()}' já se encontra definido.");
             }
             Term = newTerm;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void AssignResponsibleUser(Guid responsibleUserId)
@@ -124,6 +130,17 @@ namespace TaskManager.Core.Entities
                 throw new ArgumentException("O usuário já é responsável por esta tarefa.");
             }
             ResponsibleUserId = responsibleUserId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdatePrioritySort(int newPrioritySort)
+        {
+            if (PrioritySort.Equals(newPrioritySort))
+            {
+                throw new ArgumentException($"A prioridade '{newPrioritySort.ToString()}' já se encontra definida.");
+            }
+            PrioritySort = newPrioritySort;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

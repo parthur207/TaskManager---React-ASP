@@ -23,7 +23,7 @@ namespace TaskManager.Core.Prompts
                 ""Title"": ""<Título da Tarefa>"",
                 ""Description"": ""<Descrição da Tarefa>"",
                 ""DueDate"": ""<Data de Vencimento no formato ISO 8601>"",
-                ""Priority"": <Prioridade da Tarefa (1-5)>,)9l
+                ""Priority"": <Prioridade da Tarefa (1-5)>,)
                 ""Status"": ""<Status da Tarefa (Pendente, Em Progresso, Concluída)>""
             }
 
@@ -82,7 +82,7 @@ namespace TaskManager.Core.Prompts
             - Ordene corretamente da maior prioridade para a menor.
 
             LISTA DE TAREFAS:
-            {{TASKS_JSON}}
+            {{TASK_JSON}}
             ";
 
         public string PromptBuilder(TaskDTO Task)

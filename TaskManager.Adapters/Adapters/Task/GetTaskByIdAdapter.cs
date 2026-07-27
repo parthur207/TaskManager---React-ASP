@@ -20,31 +20,24 @@ namespace TaskManager.Adapters.Adapters.Task
     {
         private readonly DbContextTaskManager _context;
         private readonly ICachingPort _cachingPort;
-        private readonly ISpaceMembershipQueryPort _spaceMembershipQueryPort;
         public GetTaskByIdAdapter(DbContextTaskManager context, ICachingPort cachingPort, ISpaceMembershipQueryPort spaceMembershipQueryPort)
         {
             _context = context;
             _cachingPort = cachingPort;
-            _spaceMembershipQueryPort = spaceMembershipQueryPort;
         }
 
-        public async Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid SpaceId, Guid UserId)
+        public async Task<ResponseModel<TaskEntity>> ExecuteAsync(Guid TaskId, Guid UserId)
         {
             var Response = new ResponseModel<TaskEntity>();
             try
             {
-                var isUserMember = await _spaceMembershipQueryPort.IsUserMemberAsync(UserId, SpaceId);
-                if (!isUserMember.Content)
-                {
-                    Response.Message=isUserMember.Message;
-                    Response.Status = ResponseStatusEnum.Unauthorized;
-                    return Response;
-                }
+                var isUserMember = await _context.SpaceMember
+                    .AnyAsync(x => x.UserId == UserId && x.Space.Tasks.Any(y => y.Id == TaskId));   
 
-                if (!await _context.Space.AnyAsync(x=>x.Tasks.Any(y=>y.Id==TaskId)))
+                if (!isUserMember)
                 {
-                    Response.Status = ResponseStatusEnum.NotFound;
-                    Response.Message = "Erro. Tarefa não encontrada no espaço informado.";
+                    Response.Message="Erro. Usuário não é membro do espaço, ou tarefa não pertence ao espaço.";
+                    Response.Status = ResponseStatusEnum.Unauthorized;
                     return Response;
                 }
 

@@ -21,7 +21,7 @@ namespace TaskManager.API.Controllers
             _aiUseCaseCaseFacade = aiUseCaseCaseFacade;
         }
 
-        [HttpPost("analyze/{id}")]
+        [HttpPost("refine/{id}")]
         public async Task<ActionResult> GenerateRefineTaskAttributes([FromRoute] Guid idTask)
         {
             var Response = await _aiUseCaseCaseFacade.aI_RefineTaskAttributesUseCase.ExecuteAsync(idTask);
@@ -45,8 +45,8 @@ namespace TaskManager.API.Controllers
             }     
         }
 
-        [HttpPost("subTask/{idTask}")]
-        public async Task<ActionResult> GenerateSubTask([FromRoute] Guid idTask)
+        [HttpPost("taskChild/{idTask}")]
+        public async Task<ActionResult> GenerateTaskChild([FromRoute] Guid idTask)
         {
             var Response = await _aiUseCaseCaseFacade.aI_IGenerateSubTaskUseCase.ExecuteAsync(idTask);
 
@@ -96,7 +96,8 @@ namespace TaskManager.API.Controllers
         [HttpPost("execution-plan/{idTask}")]
         public async Task<ActionResult> GenerateExecutionPlan([FromRoute] Guid idTask)
         {
-            var Response = await _aiUseCaseCaseFacade.aI_GenerateExecutionPlanUseCase.ExecuteAsync(idTask);
+            var Response = await _aiUseCaseCaseFacade
+                .aI_GenerateExecutionPlanUseCase.ExecuteAsync(idTask);
 
             switch (Response.Status)
             {

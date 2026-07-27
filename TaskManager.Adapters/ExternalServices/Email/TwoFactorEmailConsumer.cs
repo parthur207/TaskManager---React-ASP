@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using TaskManager.Core.Events;
 using TaskManager.Core.Ports.Emails;
 
 namespace TaskManager.Adapters.ExternalServices.Messaging
@@ -106,12 +107,5 @@ namespace TaskManager.Adapters.ExternalServices.Messaging
             }
             await base.StopAsync(cancellationToken);
         }
-    }
-
-    public class TwoFactorEmailEvent
-    {
-        public string Email { get; set; }
-        public string Code { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

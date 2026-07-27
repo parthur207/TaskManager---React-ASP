@@ -9,6 +9,6 @@ namespace TaskManager.Core.UseCases.AI.Interfaces
 {
     public interface IAI_GenerateExecutionPlanUseCase
     {
-        Task<ResponseModel<string>> ExecuteAsync(Guid IdTask, Guid SpaceId);
+        Task<ResponseModel<string>> ExecuteAsync(Guid IdTask);
     }
 }

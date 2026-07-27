@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManager.Core.DTOs;
+﻿using TaskManager.Core.DTOs;
 using TaskManager.Core.Ports.AI;
 using TaskManager.Core.Ports.Persistence.Task;
 using TaskManager.Core.ResponsePattern;
@@ -22,7 +17,7 @@ namespace TaskManager.Core.UseCases.AI
             _ollamaProviderPort = ollamaProviderPort;
         }
 
-        public Task<ResponseModel<IEnumerable<TaskDTO>>> ExecuteAsync()
+        public Task<ResponseModel<IEnumerable<TaskDTO>>> ExecuteAsync(Guid taskId)
         {
             throw new NotImplementedException();
         }
