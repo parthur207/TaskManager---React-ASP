@@ -1,4 +1,4 @@
-name: DataBase
+name: Db
 
 services:
   sqlserver:
@@ -37,6 +37,24 @@ services:
     networks:
       - databases
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: TaskManager_RabbitMQ
+    ports:
+      - "5672:5672"    
+      - "15672:15672" 
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - databases
+
 networks:
   databases:
     name: taskmanager_databases
@@ -45,3 +63,4 @@ networks:
 volumes:
   sqlserver_data:
   redis_data:
+  rabbitmq_data:
