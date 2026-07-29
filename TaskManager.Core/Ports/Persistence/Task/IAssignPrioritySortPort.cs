@@ -7,8 +7,9 @@ using TaskManager.Core.ResponsePattern;
 
 namespace TaskManager.Core.Ports.Persistence.Task
 {
-    public interface IAssignExecutionPlanTaskPort
+    public interface IAssignPrioritySortPort
     {
-        Task<SimpleResponseModel> ExecuteAsync(string? executionPlan, Guid taskId, Guid userId);
+
+        Task<SimpleResponseModel> ExecuteAsync(int priority, Guid taskId, Guid userId);
     }
 }

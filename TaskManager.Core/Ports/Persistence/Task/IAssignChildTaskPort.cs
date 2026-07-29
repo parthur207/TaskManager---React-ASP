@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Core.Entities;
 using TaskManager.Core.ResponsePattern;
 
 namespace TaskManager.Core.Ports.Persistence.Task
 {
-    public interface IAssignExecutionPlanTaskPort
+    public interface IAssignChildTaskPort
     {
-        Task<SimpleResponseModel> ExecuteAsync(string? executionPlan, Guid taskId, Guid userId);
+        Task<SimpleResponseModel> AssignChildTaskAsync(Guid TaskParent, Guid userId, TaskChildrenEntity entity);
     }
 }

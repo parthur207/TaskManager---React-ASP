@@ -55,7 +55,7 @@ namespace TaskManager.Core.UseCases.AI
 
             var prompt = _taskPriorityPrompt.PromptBuilder(TaskMapper.ListEntityToListDTO(ResponseRepository.Content));
 
-            var ResponseIA = await _ollamaProviderPort.GenerateAsync(prompt);
+            var ResponseIA = await _ollamaProviderPort.GenerateAsync<IEnumerable<AI_PriorityTasksDTO>>(prompt);
 
             if (ResponseIA.Status != ResponseStatusEnum.Success)
             {
@@ -64,7 +64,7 @@ namespace TaskManager.Core.UseCases.AI
                 return Response;
             }
 
-            Response.Content = ResponseIA.Content as string ?? string.Empty;
+            Response.Content = ResponseIA.Content as IEnumerable<AI_PriorityTasksDTO> ?? Enumerable.Empty<AI_PriorityTasksDTO>();
             Response.Status = ResponseStatusEnum.Success;
             return Response;
         }
