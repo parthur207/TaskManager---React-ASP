@@ -21,7 +21,7 @@ namespace TaskManager.API.Controllers
             _aiUseCaseCaseFacade = aiUseCaseCaseFacade;
         }
 
-        [HttpPost("refine/{id}")]
+        [HttpPost("refine/{idTask}")]
         public async Task<ActionResult> GenerateRefineTaskAttributes([FromRoute] Guid idTask)
         {
             var Response = await _aiUseCaseCaseFacade.aI_RefineTaskAttributesUseCase.ExecuteAsync(idTask);
